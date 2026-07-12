@@ -1,0 +1,3 @@
+User-agent: *
+Allow: /
+Sitemap: https://linux-turkiye.github.io/sitemap.xml
