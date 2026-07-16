@@ -1,0 +1,63 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Anonim Anılar - LinuxTR</title>
+</head>
+<body style="background: #222; color: #fff; display: flex; flex-direction: column; align-items: center; padding: 50px; font-family: sans-serif;">
+
+    <h1>📜 Anı Defteri (LinuxTR)</h1>
+    <p>Linux Türkiye topluluğuna anonim olarak anılarını bırak.</p>
+
+    <div style="background: #333; padding: 20px; border-radius: 10px; width: 100%; max-width: 500px;">
+        <textarea id="myStory" rows="4" placeholder="Buraya anını yaz..." style="width: 100%; padding: 10px; border-radius: 5px; border: none;"></textarea>
+        <br><br>
+        <button id="sendBtn" style="background: #5865F2; color: white; border: none; padding: 10px 20px; border-radius: 5px; cursor: pointer; width: 100%;">Yayınla</button>
+    </div>
+    
+    <p id="statusMsg" style="margin-top: 15px; color: #aaa;"></p>
+
+    <script>
+        const WEBHOOK_URL = "https://discord.com/api/webhooks/1527457681693081742/BGRlscVM1LBADgErjSJNwrmu52GRy_PT7hBNQ7PFSscyTE9uiL0JjMsSLW1A6UEMCEVr";
+
+        const sendBtn = document.getElementById('sendBtn');
+        const statusMsg = document.getElementById('statusMsg');
+        const storyInput = document.getElementById('myStory');
+
+        sendBtn.addEventListener('click', async () => {
+            const storyText = storyInput.value.trim();
+            if (!storyText) {
+                statusMsg.innerText = "Lütfen bir şeyler yaz!";
+                return;
+            }
+
+            statusMsg.innerText = "Gönderiliyor...";
+            sendBtn.disabled = true;
+
+            try {
+                const response = await fetch(WEBHOOK_URL, {
+                    method: "POST",
+                    headers: { "Content-Type": "application/json" },
+                    body: JSON.stringify({
+                        "username": "Anonim LinuxTR Üyesi",
+                        "avatar_url": "https://i.imgur.com/8Q8F3wT.png",
+                        "content": `📌 **Yeni Bir Anı:**\n> ${storyText}` 
+                    })
+                });
+
+                if (response.ok) {
+                    statusMsg.innerText = "✅ Anın başarıyla paylaşıldı!";
+                    storyInput.value = "";
+                } else {
+                    statusMsg.innerText = "❌ Gönderim başarısız oldu. (API Hatası)";
+                }
+
+            } catch (error) {
+                console.error(error);
+                statusMsg.innerText = "❌ Bağlantı hatası!";
+            } finally {
+                sendBtn.disabled = false;
+            }
+        });
+    </script>
+</body>
+</html>
